@@ -1,0 +1,22 @@
+{
+  "name": "estree-glide",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.8.0",
+  "dependencies": {
+    "@babel/types": "^7.27.0",
+    "tsdown": "^0.6.10"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.27.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}
