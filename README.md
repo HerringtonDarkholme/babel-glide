@@ -65,6 +65,7 @@ walk(ast, {
     }
 })
 ```
+Note in estree-glide we don't need to rely on the global variable `accumulator`.
 
 ### 2. argument of the traversal function
 
