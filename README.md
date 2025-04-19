@@ -23,9 +23,9 @@ Generator functions in estree-glide provide several advantages:
 - Cleaner code without method binding or `this` context
 
 
-### Explanation of the API
+## Explanation of the API
 
-1. `enter` / `exit` code in one generator function, separated by `yield`
+### 1. `enter` / `exit` code in one generator function, separated by `yield`
 
 This is a contrived simple example to illustrate the traversal function in estree-glide:
 The first argument is the current node during the traversla, and the second argument is an accumulator object.
@@ -61,7 +61,7 @@ const accumulator = { enter: 0, exit: 0 }
 traverse(ast.program, traverseAST, accumulator)
 ```
 
-2. change the accumulator value
+### 2. change the accumulator value
 
 Given the recursive nature of the traversal, it is quite often we need to use a new accumlator value for the child nodes. In this case, we can use the `yield` statement to pass new accumulator to descendent node traversal.
 
