@@ -12,7 +12,7 @@ test('traverse', async () => {
   const result = traverse(ast.program, function*(node, result) {
     result.push(node.type)
     return result
-  }, [])
+  }, [] as string[])
   expect(result).toEqual([
     'Program',
     'VariableDeclaration',
@@ -57,26 +57,19 @@ class Scope {
   }
 }
 
-function *collectScope(node: Node, scope: Scope, { path }: Context) {
-  // function foo () {...}
-  // class Foo {...}
+function *collectScope(node: Node, scope: Scope, { parent }: Context) {
+  // function foo () {...}, class Foo {...}
   if (/(?:Function|Class)Declaration/.test(node.type)) { scope.addDeclaration(node) }
-  // var foo = 1
-  if (node.type === 'VariableDeclaration') {
+  if (node.type === 'VariableDeclaration') { // var foo = 1
     node.declarations.forEach((declaration) => { scope.addDeclaration(declaration) })
   }
-  let newScope = scope
-  // create new function scope
+  let newScope = scope // create new function scope
   if (/Function/.test(node.type)) {
-    const func = node
-    newScope = new Scope(scope)
-    // named function expressions - the name is considered
-    if (func.type === 'FunctionExpression' && func.id) {
-      newScope.addDeclaration(func)
-    }
+    newScope = new Scope(scope) // add named function expressions
+    if (node.type === 'FunctionExpression' && node.id) { newScope.addDeclaration(node) }
   }
   if (/For(?:In|Of)?Statement/.test(node.type)) { newScope = new Scope(scope) }
-  if (node.type === 'BlockStatement' && path.at(-1)?.prop !== 'body') { newScope = new Scope(scope) }
+  if (node.type === 'BlockStatement' && parent?.type !== 'FunctionDeclaration') { newScope = new Scope(scope) }
   if (node.type === 'CatchClause') { newScope = new Scope(scope) }
   yield newScope
   return scope
