@@ -27,10 +27,16 @@ Generator functions in estree-glide provide several advantages:
 
 ### 1. `enter` / `exit` code in one generator function, separated by `yield`
 
-This is a contrived simple example to illustrate the traversal function in estree-glide:
-The first argument is the current node during the traversla, and the second argument is an accumulator object.
+the generator function has two phases: the enter phase and the exit phase.
 
-The accumulator object can be used to store information during the traversal, in this case, we are counting the number of nodes entered and exited. A more realistic example would be to collect the node defnitions in a scope or collecting the usage of a variable.
+The whole execution is like this:
+* The enter phase code runs before `yield`
+* yield is called and the child nodes are traversed, recursively
+* run the exit phase code is after `yield`.
+
+Enter phase is executed when the node is first visited. The `yield` statement is used to pause the execution of the generator function and pass control to the child nodes. The child nodes will be traversed, and when they are done, control will return to the parent node, and the code after `yield` will be executed
+
+This is a contrived simple example to illustrate the traversal function in estree-glide:
 
 ```ts
 function* traverseAST(node: Node, accumulator: { enter: number, exit: number }) {
@@ -44,6 +50,12 @@ function* traverseAST(node: Node, accumulator: { enter: number, exit: number }) 
     accumulator.exit++
 }
 ```
+
+### 2. argument of the traversal function
+
+The first argument is the current node during the traversal, and the second argument is an accumulator object.
+
+The accumulator object can be used to store information during the traversal, in this case, we are counting the number of nodes entered and exited. A more realistic example would be to collect the node definitions in a scope or collecting the usage of a variable.
 
 To execute the traversal function
 
@@ -61,9 +73,9 @@ const accumulator = { enter: 0, exit: 0 }
 traverse(ast.program, traverseAST, accumulator)
 ```
 
-### 2. change the accumulator value
+### 3. change the accumulator value
 
-Given the recursive nature of the traversal, it is quite often we need to use a new accumlator value for the child nodes. In this case, we can use the `yield` statement to pass new accumulator to descendent node traversal.
+Given the recursive nature of the traversal, it is quite often we need to use a new accumlator value for the child nodes. In estree-glide, we can use the `yield` statement to pass new accumulator to descendent node traversal.
 
 For example, we can create new scope for function declarations and pass it to the child nodes.
 
