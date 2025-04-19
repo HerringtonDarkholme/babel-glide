@@ -51,6 +51,21 @@ function* traverseAST(node: Node, accumulator: { enter: number, exit: number }) 
 }
 ```
 
+This is equivalent to estree-walker:
+
+```TypeScript
+import { walk } from 'estree-walker'
+let accumulator = { enter: 0, exit: 0 }
+walk(ast, {
+    enter(node) {
+        accumulator.enter++
+    },
+    leave(node) {
+        accumulator.exit++
+    }
+})
+```
+
 ### 2. argument of the traversal function
 
 The first argument is the current node during the traversal, and the second argument is an accumulator object.
